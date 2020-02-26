@@ -14,7 +14,7 @@ layout = [
      ],
     [sg.Text('Abort:', size=(10, 1)), sg.Button('Abort', size=(15, 1))
      ],
-    [sg.Text('Tokadown v0.1, by Toka', size=(40, 1), key=('output'))
+    [sg.Text('Tokadown v0.1, by Toka', size=(20, 1), key=('output'))
      ],
     [sg.Button('Exit', size=(10, 1)), sg.Button('Settings', size=(10, 1))]]
 
