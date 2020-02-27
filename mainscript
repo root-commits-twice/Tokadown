@@ -5,6 +5,8 @@
 Shutdown pc plz by Toka (Sleep)
 """
 
+# build using: pyinstaller.exe --onefile --windowed --icon=Images\myicon.ico tokadown.py
+import math
 import os
 import PySimpleGUI as sg
 import pickle
@@ -27,7 +29,7 @@ def main_window():
          ],
         [sg.Button('Exit', size=(10, 1)), sg.Button('Settings', size=(10, 1))]]
 
-    window = sg.Window('Tokadown v0.2b', layout)
+    window = sg.Window('Tokadown v0.21a', layout)
     while True:
         event, values = window.read()
         if event in (None, 'Exit'):
@@ -42,19 +44,17 @@ def main_window():
                 data = pickle.load(open("save.p", "rb"))
                 minutes = data[0]
             if os.name == 'nt':
-                os.system("Shutdown /t {0} /s".format(minutes))
+                os.system("Shutdown /t {0} /s".format(int(minutes)*60))
             else:
-                min = int(minutes) / 60
-                print(min)
-                os.system("shutdown -h {0}".format(round(min)))
-            window.FindElement('output').Update("Shutting down in {0} seconds".format(minutes))
+                os.system("shutdown -h {0}".format(minutes))
+            window.FindElement('output').Update("Shutting down in {0} minutes".format(minutes))
 
         elif event in ('Abort shutdown'):
             if os.name == 'nt':
                 os.system('shutdown /a')
             else:
                 os.system('shutdown -c')
-            window.FindElement('output').Update("Shutdown cancelled")
+            window.FindElement('output').Update("Shutdown aborted")
         elif event in ('Settings'):
             settings_window()
 
@@ -66,7 +66,7 @@ def settings_window():
     layout = [
         [sg.Text('Enter time to shutdown', size=(30, 1))
          ],
-        [sg.Text('Seconds:', size=(10, 1)), sg.Input('0', size=(10, 1), key=('minutes'))
+        [sg.Text('Minutes:', size=(10, 1)), sg.Input('0', size=(10, 1), key=('minutes'))
          ],
         [sg.Text('Countdown:', size=(10, 1)), sg.Checkbox('', key=('countdown'))
          ],
@@ -74,7 +74,7 @@ def settings_window():
          ],
         [sg.Button('Close', size=(10, 1)), sg.Button('Apply', size=(10, 1))]]
 
-    window = sg.Window('Tokadown settings', layout, auto_size_text=True)
+    window = sg.Window('Settings', layout, auto_size_text=True)
     while True:
         event, values = window.read()
         if event in (None, 'Close'):
