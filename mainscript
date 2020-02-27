@@ -15,6 +15,7 @@ def main():
     while True:
         main_window()
 
+
 def main_window():
     sg.theme('DarkAmber')
     layout = [
@@ -41,10 +42,12 @@ def main_window():
                 data = pickle.load(open("save.p", "rb"))
                 minutes = data[0]
             if os.name == 'nt':
-                os.system("Shutdown /t {0} /s".format(minutes*60))
+                os.system("Shutdown /t {0} /s".format(minutes))
             else:
-                os.system("shutdown -h {0}".format(minutes))
-            window.FindElement('output').Update("Shutting down in {0} minutes".format(minutes))
+                min = int(minutes) / 60
+                print(min)
+                os.system("shutdown -h {0}".format(round(min)))
+            window.FindElement('output').Update("Shutting down in {0} seconds".format(minutes))
 
         elif event in ('Abort shutdown'):
             if os.name == 'nt':
@@ -54,9 +57,6 @@ def main_window():
             window.FindElement('output').Update("Shutdown cancelled")
         elif event in ('Settings'):
             settings_window()
-        else:
-            #todo add timer stuff here
-
 
     window.close()
 
@@ -66,13 +66,13 @@ def settings_window():
     layout = [
         [sg.Text('Enter time to shutdown', size=(30, 1))
          ],
-        [sg.Text('Minutes:', size=(10, 1)), sg.Input('0', size=(10, 1), key=('minutes'))
+        [sg.Text('Seconds:', size=(10, 1)), sg.Input('0', size=(10, 1), key=('minutes'))
          ],
         [sg.Text('Countdown:', size=(10, 1)), sg.Checkbox('', key=('countdown'))
          ],
         [sg.Text('-', size=(25, 1), key=('output'))
          ],
-        [sg.Button('Close',size=(10, 1)), sg.Button('Apply', size=(10, 1))]]
+        [sg.Button('Close', size=(10, 1)), sg.Button('Apply', size=(10, 1))]]
 
     window = sg.Window('Tokadown settings', layout, auto_size_text=True)
     while True:
