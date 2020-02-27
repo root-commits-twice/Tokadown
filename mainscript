@@ -7,28 +7,79 @@ Shutdown pc plz by Toka (Sleep)
 
 import os
 import PySimpleGUI as sg
+import pickle
 
-sg.theme('DarkAmber')
-layout = [
-    [sg.Text('Shutdown:', size=(10, 1)), sg.Button('Shutdown', size=(15, 1))
-     ],
-    [sg.Text('Abort:', size=(10, 1)), sg.Button('Abort', size=(15, 1))
-     ],
-    [sg.Text('Tokadown v0.1, by Toka', size=(20, 1), key=('output'))
-     ],
-    [sg.Button('Exit', size=(10, 1)), sg.Button('Settings', size=(10, 1))]]
 
-window = sg.Window('Tokadown v0.1', layout)
-while True:
-    event, values = window.read()
-    if event in (None, 'Exit'):
+def main():
+    while True:
+        main_window()
+
+def main_window():
+    sg.theme('DarkAmber')
+    layout = [
+        [sg.Text('Shutdown:', size=(10, 1)), sg.Button('Shutdown', size=(15, 1))
+         ],
+        [sg.Text('Abort:', size=(10, 1)), sg.Button('Abort', size=(15, 1))
+         ],
+        [sg.Text('Tokadown, by Toka', size=(25, 1), key=('output'))
+         ],
+        [sg.Button('Exit', size=(10, 1)), sg.Button('Settings', size=(10, 1))]]
+
+    window = sg.Window('Tokadown v0.2', layout)
+    while True:
+        event, values = window.read()
+        if event in (None, 'Exit'):
+            exit(0)
+        elif event in ('Shutdown in 5 minutes'):
+            try:
+                minutes = pickle.load(open("save.p", "rb"))
+            except:
+                data = 5
+                pickle.dump(data, open("save.p", "wb"))
+                minutes = pickle.load(open("save.p", "rb"))
+            if os.name == 'nt':
+                os.system("Shutdown /t {0} /s".format(minutes*60))
+            else:
+                os.system("shutdown -h {0}".format(minutes))
+            window.FindElement('output').Update("Shutting down in {0} minutes".format(minutes))
+        elif event in ('Abort shutdown'):
+            if os.name == 'nt':
+                os.system('shutdown /a')
+            else:
+                os.system('shutdown -c')
+            window.FindElement('output').Update("Shutdown cancelled")
+        elif event in ('Settings'):
+            settings_window()
+
+    window.close()
+
+
+def settings_window():
+    sg.theme('DarkAmber')
+    layout = [
+        [sg.Text('Enter time to shutdown', size=(30, 1))
+         ],
+        [sg.Text('Minutes:', size=(10, 1)), sg.Input('0', size=(10, 1), key=('minutes'))
+         ],
+        [sg.Text('-', size=(25, 1), key=('output'))
+         ],
+        [sg.Button('Close', size=(10, 1)), sg.Button('Apply', size=(10, 1))]]
+
+    window = sg.Window('Tokadown settings', layout)
+    while True:
+        event, values = window.read()
+        if event in (None, 'Close'):
+            break
+        elif event in ('Apply'):
+            data = values['minutes']
+            pickle.dump(data, open("save.p", "wb"))
+            window.FindElement('output').Update("Settings applied")
+
+    window.close()
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
         exit(0)
-    elif event in ('Shutdown in 5 minutes'):
-        os.system('shutdown /t 300 /s')
-        window.FindElement('output').Update("Shutting down in 5 minutes")
-    elif event in ('Abort shutdown'):
-        os.system('shutdown /a')
-        window.FindElement('output').Update("Shutdown cancelled")
-
-
-window.close()
