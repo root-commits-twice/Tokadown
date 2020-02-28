@@ -3,9 +3,7 @@ A configurable shutdown script.
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
-* [Versions](#versions)
 * [Setup](#setup)
-* [How to use](#how-to-use)
 * [Releases](#releases)
 
 ## General info
