@@ -7,8 +7,8 @@ A configurable shutdown script.
 * [Releases](#releases)
 
 ## General info
-Tokadown is a program that shuts down your PC.
-You can configure the time before shutdown, the parameters before shutdown and so on.
+Tokadown is a program that shuts down your PC.  
+You can configure the time before shutdown, the parameters before shutdown and so on.  
 	
 ## Technologies
 Project is created with:
